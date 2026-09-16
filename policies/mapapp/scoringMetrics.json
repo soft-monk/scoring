@@ -1,0 +1,116 @@
+{
+  "_note": "演示级参数（需求初稿 §10.2 列为待确认口径）。口径：total = Σ normalize(raw) × weight，对外整数百分比（half-up）。权重和恰为 1.00（四项 0.17 + 两项 0.16 = 0.68 + 0.32）；基线之和 558、均值等于需求初稿 §6 T1-1 的『推荐评分』锚点。加权和由引擎导出、可手算复算（ADR-C1-04/05：只许调参数，不许硬编码；引擎内 MUST NOT 出现本文件的任何取值）。",
+  "policiesNamespace": "mapapp",
+  "schemaVersion": "1.0.0",
+  "kind": "scoringMetrics",
+  "aggregate": {
+    "method": "linear-weighted-mean",
+    "rounding": "half-up",
+    "outputScale": 100,
+    "normalizeWeights": false,
+    "note": "weights MUST sum to 1.0（全 0 或和不为 1 → 引擎报错）；normalize 后每项落在 0..1；总分 = Σ 归一值×权重",
+    "neutralRule": {
+      "enabled": true,
+      "valueSource": "baseline",
+      "markMissing": true,
+      "missingMarker": "link-eval-missing",
+      "note": "缺链路评估/资源台账输入时按中性值（=该指标 baseline）处理并标注缺失，评分不失败（专篇 §6 风险 R6 / SCD-SCORE-05）"
+    }
+  },
+  "reasons": {
+    "count": 4,
+    "types": [
+      { "type": "top-score", "note": "得分最高的指标" },
+      { "type": "top-contribution", "note": "对总分贡献最大的指标" },
+      { "type": "lead", "note": "与次优的差值" },
+      { "type": "advantage", "note": "相对次优的关键优势项" }
+    ],
+    "note": "条数与类型序列属规则（SCD-PICK-04）；引擎只产出结构化条目 {type, metricKey, value, refKey}，MUST NOT 产出自然语言话术（SCD-EXP-02）"
+  },
+  "searchSpace": {
+    "maxIterations": 240,
+    "timeBudgetMs": 100,
+    "maxTotalSteps": 12,
+    "note": "SCD-OPT-02：可调参数、步长、上下限由规则声明；引擎只实现机制（同输入同结果、单调、幂等、可截断）",
+    "params": [
+      { "key": "lift-coverageRate", "name": "覆盖率提升", "metricKey": "coverageRate", "step": 1, "maxSteps": 4 },
+      { "key": "lift-linkStability", "name": "链路稳定度提升", "metricKey": "linkStability", "step": 1, "maxSteps": 4 },
+      { "key": "lift-targetDetection", "name": "目标发现效率提升", "metricKey": "targetDetection", "step": 1, "maxSteps": 4 },
+      { "key": "lift-electronicSuppression", "name": "电子压制能力提升", "metricKey": "electronicSuppression", "step": 1, "maxSteps": 4 }
+    ]
+  },
+  "items": [
+    {
+      "key": "coverageRate",
+      "name": "区域覆盖率",
+      "direction": "higher",
+      "unit": "%",
+      "normalize": { "type": "range", "min": 0, "max": 100 },
+      "weight": 0.17,
+      "baseline": 96,
+      "baselineUsed": false,
+      "source": { "kind": "profile", "metric": "coverageRate" },
+      "neutralOnMissing": { "enabled": true, "value": 96, "missingMarker": "link-eval-missing" }
+    },
+    {
+      "key": "linkStability",
+      "name": "链路稳定度",
+      "direction": "higher",
+      "unit": "%",
+      "normalize": { "type": "range", "min": 0, "max": 100 },
+      "weight": 0.17,
+      "baseline": 93,
+      "baselineUsed": false,
+      "source": { "kind": "profile", "metric": "linkStability" },
+      "neutralOnMissing": { "enabled": true, "value": 93, "missingMarker": "link-eval-missing" }
+    },
+    {
+      "key": "targetDetection",
+      "name": "目标发现效率",
+      "direction": "higher",
+      "unit": "%",
+      "normalize": { "type": "range", "min": 0, "max": 100 },
+      "weight": 0.17,
+      "baseline": 91,
+      "baselineUsed": false,
+      "source": { "kind": "profile", "metric": "targetDetection" },
+      "neutralOnMissing": { "enabled": true, "value": 91, "missingMarker": "targets-missing" }
+    },
+    {
+      "key": "electronicSuppression",
+      "name": "电子压制能力",
+      "direction": "higher",
+      "unit": "%",
+      "normalize": { "type": "range", "min": 0, "max": 100 },
+      "weight": 0.17,
+      "baseline": 88,
+      "baselineUsed": false,
+      "source": { "kind": "profile", "metric": "electronicSuppression" },
+      "neutralOnMissing": { "enabled": true, "value": 88, "missingMarker": "suppression-missing" }
+    },
+    {
+      "key": "missionSuccess",
+      "name": "任务成功率",
+      "direction": "higher",
+      "unit": "%",
+      "normalize": { "type": "range", "min": 0, "max": 100 },
+      "weight": 0.16,
+      "baseline": 94,
+      "baselineUsed": true,
+      "source": { "kind": "profile", "metric": "missionSuccess" },
+      "neutralOnMissing": { "enabled": true, "value": 94, "missingMarker": "success-rate-missing" }
+    },
+    {
+      "key": "resourceUtilization",
+      "name": "资源利用率",
+      "direction": "higher",
+      "unit": "%",
+      "normalize": { "type": "range", "min": 0, "max": 100 },
+      "weight": 0.16,
+      "baseline": 96,
+      "baselineUsed": true,
+      "source": { "kind": "profile", "metric": "resourceUtilization" },
+      "neutralOnMissing": { "enabled": true, "value": 96, "missingMarker": "resources-missing" }
+    }
+  ]
+}

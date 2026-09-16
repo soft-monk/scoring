@@ -1,0 +1,258 @@
+{
+  "_note": "演示级参数。方案名称逐字取自《开发接口契约规格书》§7.3/§7.4，不得改动（ADR-C2-04）。successRate 与 profiles[].values 为演示基线（ADR-C1-02：基线住规则包，引擎 MUST NOT 含默认值）。profiles 为模板族的指标剖面 —— 引擎的机制是『剖面命中则用剖面，否则用该指标的 baseline』，因此推荐项的六项取值恒等于 scoringMetrics 的 baseline，可由导出项手算复算（ADR-C1-04）。",
+  "policiesNamespace": "mapapp",
+  "schemaVersion": "1.0.0",
+  "kind": "planTemplates",
+  "confirmPrecondition": {
+    "mode": "reject-if-not-adopted",
+    "note": "SCD-DECIDE-03：未采纳直接确认时的策略由规则声明（reject-if-not-adopted / auto-adopt）。专篇 §9 待确认 5 列为开放问题，本规则包取『拒绝』，宿主可一行改口径。"
+  },
+  "profiles": [
+    {
+      "key": "base-coverage",
+      "name": "基础侦察覆盖族",
+      "values": {
+        "coverageRate": 84,
+        "linkStability": 81,
+        "targetDetection": 79,
+        "electronicSuppression": 77,
+        "missionSuccess": 74,
+        "resourceUtilization": 88
+      }
+    },
+    {
+      "key": "multi-domain",
+      "name": "多域协同族",
+      "values": {
+        "coverageRate": 96,
+        "linkStability": 93,
+        "targetDetection": 91,
+        "electronicSuppression": 88,
+        "missionSuccess": 93,
+        "resourceUtilization": 96
+      }
+    },
+    {
+      "key": "focused-breakthrough",
+      "name": "重点突破族",
+      "values": {
+        "coverageRate": 81,
+        "linkStability": 78,
+        "targetDetection": 86,
+        "electronicSuppression": 84,
+        "missionSuccess": 69,
+        "resourceUtilization": 84
+      }
+    },
+    {
+      "key": "distributed-edge",
+      "name": "分布边缘协同族",
+      "values": {
+        "coverageRate": 90,
+        "linkStability": 84,
+        "targetDetection": 91,
+        "electronicSuppression": 83,
+        "missionSuccess": 74,
+        "resourceUtilization": 96
+      }
+    },
+    {
+      "key": "precise-strike",
+      "name": "光电精确打击族",
+      "values": {
+        "coverageRate": 84,
+        "linkStability": 87,
+        "targetDetection": 90,
+        "electronicSuppression": 62,
+        "missionSuccess": 68,
+        "resourceUtilization": 76
+      }
+    },
+    {
+      "key": "swarm-strike",
+      "name": "多集群协同压制族",
+      "values": {
+        "coverageRate": 93,
+        "linkStability": 91,
+        "targetDetection": 90,
+        "electronicSuppression": 88,
+        "missionSuccess": 82,
+        "resourceUtilization": 96
+      }
+    },
+    {
+      "key": "ew-strike",
+      "name": "电子干扰配合族",
+      "values": {
+        "coverageRate": 70,
+        "linkStability": 81,
+        "targetDetection": 72,
+        "electronicSuppression": 93,
+        "missionSuccess": 61,
+        "resourceUtilization": 72
+      }
+    }
+  ],
+  "items": [
+    {
+      "key": "grp-s1-a",
+      "side": "group",
+      "scene": "scenario-1",
+      "seq": 1,
+      "name": "方案一｜稳态侦察覆盖方案",
+      "method": "稳定侦察覆盖",
+      "clusters": ["侦察集群 1", "侦察集群 2", "通信中继集群", "电子侦察集群", "预备支援集群"],
+      "successRate": 74,
+      "effect": "持续侦察覆盖",
+      "profileKey": "base-coverage",
+      "when": { "minClusters": 4 }
+    },
+    {
+      "key": "grp-s1-b",
+      "side": "group",
+      "scene": "scenario-1",
+      "seq": 2,
+      "name": "方案二｜多域协同压制方案",
+      "method": "多域协同压制",
+      "clusters": ["前出侦察集群", "侧翼侦察集群", "雷达探测集群", "通信中继集群", "电子压制集群", "机动预备集群"],
+      "successRate": 93,
+      "effect": "压制并覆盖",
+      "recommended": true,
+      "profileKey": "multi-domain",
+      "when": { "minClusters": 6 }
+    },
+    {
+      "key": "grp-s1-c",
+      "side": "group",
+      "scene": "scenario-1",
+      "seq": 3,
+      "name": "方案三｜重点区域突破方案",
+      "method": "重点区域突破",
+      "clusters": ["重点侦察集群", "目标跟踪集群", "通信保障集群", "电子干扰集群"],
+      "successRate": 69,
+      "effect": "重点突破",
+      "profileKey": "focused-breakthrough",
+      "when": { "minClusters": 4 }
+    },
+    {
+      "key": "grp-s2-a",
+      "side": "group",
+      "scene": "scenario-2",
+      "seq": 1,
+      "name": "方案一｜分布式稳态感知",
+      "method": "持续态势回传 / 稳定侦察覆盖",
+      "clusters": ["前出侦察集群", "侧向感知集群", "雷达探测集群", "边缘协同处理集群", "电子对抗集群", "机动执行集群"],
+      "successRate": 74,
+      "effect": "持续态势回传",
+      "profileKey": "distributed-edge",
+      "when": { "minClusters": 5 }
+    },
+    {
+      "key": "grp-s2-b",
+      "side": "group",
+      "scene": "scenario-2",
+      "seq": 2,
+      "name": "方案二｜云边协同自适应攻击",
+      "method": "云边协同自适应攻击",
+      "clusters": ["前出侦察集群", "侧向感知集群", "雷达探测集群", "边缘协同处理集群", "电子对抗集群", "机动执行集群"],
+      "successRate": 93,
+      "effect": "边缘自主 + 云端优化",
+      "recommended": true,
+      "profileKey": "multi-domain",
+      "when": { "minClusters": 6 }
+    },
+    {
+      "key": "grp-s2-c",
+      "side": "group",
+      "scene": "scenario-2",
+      "seq": 3,
+      "name": "方案三｜集中式快速压制",
+      "method": "局部集中调度 / 快速压制目标",
+      "clusters": ["前出侦察集群", "雷达探测集群", "电子对抗集群", "机动执行集群"],
+      "successRate": 69,
+      "effect": "快速压制",
+      "profileKey": "focused-breakthrough",
+      "when": { "minClusters": 4 }
+    },
+    {
+      "key": "stk-s1-a",
+      "side": "strike",
+      "scene": "scenario-1",
+      "seq": 1,
+      "name": "方案一 光电精确打击",
+      "method": "精确打击",
+      "clusters": ["集群 2（光电）"],
+      "successRate": 68,
+      "effect": "精准摧毁",
+      "profileKey": "precise-strike",
+      "when": { "minClusters": 1 }
+    },
+    {
+      "key": "stk-s1-b",
+      "side": "strike",
+      "scene": "scenario-1",
+      "seq": 2,
+      "name": "方案二 多集群协同压制",
+      "method": "协同压制",
+      "clusters": ["集群 1", "集群 2", "集群 3", "集群 4", "集群 5", "集群 6"],
+      "successRate": 82,
+      "effect": "压制摧毁",
+      "recommended": true,
+      "profileKey": "swarm-strike",
+      "when": { "minClusters": 6 }
+    },
+    {
+      "key": "stk-s1-c",
+      "side": "strike",
+      "scene": "scenario-1",
+      "seq": 3,
+      "name": "方案三 电子干扰配合",
+      "method": "电子干扰+打击",
+      "clusters": ["集群 4（电子）", "集群 5（通信）"],
+      "successRate": 61,
+      "effect": "干扰瘫痪后打击",
+      "profileKey": "ew-strike",
+      "when": { "minClusters": 2 }
+    },
+    {
+      "key": "stk-s2-a",
+      "side": "strike",
+      "scene": "scenario-2",
+      "seq": 1,
+      "name": "方案一｜光电精确打击",
+      "method": "精确打击（局部执行）",
+      "clusters": ["前出侦察集群"],
+      "successRate": 68,
+      "effect": "精准摧毁",
+      "profileKey": "precise-strike",
+      "when": { "minClusters": 1 }
+    },
+    {
+      "key": "stk-s2-b",
+      "side": "strike",
+      "scene": "scenario-2",
+      "seq": 2,
+      "name": "方案二｜集群协同攻击",
+      "method": "集群协同（分布式自主执行）",
+      "clusters": ["前出侦察集群", "侧向感知集群", "雷达探测集群", "边缘协同处理集群", "电子对抗集群", "机动执行集群"],
+      "successRate": 82,
+      "effect": "协同攻击",
+      "recommended": true,
+      "profileKey": "swarm-strike",
+      "when": { "minClusters": 6 }
+    },
+    {
+      "key": "stk-s2-c",
+      "side": "strike",
+      "scene": "scenario-2",
+      "seq": 3,
+      "name": "方案三｜电子压制协同",
+      "method": "电子压制协同",
+      "clusters": ["电子对抗集群", "机动执行集群"],
+      "successRate": 61,
+      "effect": "压制后打击",
+      "profileKey": "ew-strike",
+      "when": { "minClusters": 2 }
+    }
+  ]
+}
