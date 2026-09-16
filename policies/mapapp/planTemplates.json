@@ -1,7 +1,7 @@
 {
-  "_note": "演示级参数。方案名称逐字取自《开发接口契约规格书》§7.3/§7.4，不得改动（ADR-C2-04）。successRate 与 profiles[].values 为演示基线（ADR-C1-02：基线住规则包，引擎 MUST NOT 含默认值）。profiles 为模板族的指标剖面 —— 引擎的机制是『剖面命中则用剖面，否则用该指标的 baseline』，因此推荐项的六项取值恒等于 scoringMetrics 的 baseline，可由导出项手算复算（ADR-C1-04）。",
+  "_note": "演示级参数。方案名称逐字取自《开发接口契约规格书》§7.3/§7.4，不得改动（ADR-C2-04）。successRate 与 profiles[].values 为演示基线（ADR-C1-02：基线住规则包，引擎 MUST NOT 含默认值）。profiles 为模板族的指标剖面 —— 引擎的机制是『剖面命中则用剖面，否则用该指标的 baseline』，因此推荐项的六项取值恒等于 scoringMetrics 的 baseline，可由导出项手算复算（ADR-C1-04）。M5：strike/group 侧追加 coordination/plannedFinish 两个可选字段、strike 侧再追加 attackStart/assessRoute 两个键引用字段（均为 MINOR，引擎不解析，经 TemplatesPack.raw 供宿主读取）。",
   "policiesNamespace": "mapapp",
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "kind": "planTemplates",
   "confirmPrecondition": {
     "mode": "reject-if-not-adopted",
@@ -105,7 +105,10 @@
       "successRate": 74,
       "effect": "持续侦察覆盖",
       "profileKey": "base-coverage",
-      "when": { "minClusters": 4 }
+      "when": { "minClusters": 4 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 180 }
     },
     {
       "key": "grp-s1-b",
@@ -119,7 +122,10 @@
       "effect": "压制并覆盖",
       "recommended": true,
       "profileKey": "multi-domain",
-      "when": { "minClusters": 6 }
+      "when": { "minClusters": 6 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 150 }
     },
     {
       "key": "grp-s1-c",
@@ -132,7 +138,10 @@
       "successRate": 69,
       "effect": "重点突破",
       "profileKey": "focused-breakthrough",
-      "when": { "minClusters": 4 }
+      "when": { "minClusters": 4 },
+      "coordination": "sequential",
+      "coordinationLabel": "序贯",
+      "plannedFinish": { "basis": "from-t0", "minutes": 210 }
     },
     {
       "key": "grp-s2-a",
@@ -145,7 +154,10 @@
       "successRate": 74,
       "effect": "持续态势回传",
       "profileKey": "distributed-edge",
-      "when": { "minClusters": 5 }
+      "when": { "minClusters": 5 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 180 }
     },
     {
       "key": "grp-s2-b",
@@ -159,7 +171,10 @@
       "effect": "边缘自主 + 云端优化",
       "recommended": true,
       "profileKey": "multi-domain",
-      "when": { "minClusters": 6 }
+      "when": { "minClusters": 6 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 150 }
     },
     {
       "key": "grp-s2-c",
@@ -172,7 +187,10 @@
       "successRate": 69,
       "effect": "快速压制",
       "profileKey": "focused-breakthrough",
-      "when": { "minClusters": 4 }
+      "when": { "minClusters": 4 },
+      "coordination": "sequential",
+      "coordinationLabel": "序贯",
+      "plannedFinish": { "basis": "from-t0", "minutes": 210 }
     },
     {
       "key": "stk-s1-a",
@@ -185,7 +203,12 @@
       "successRate": 68,
       "effect": "精准摧毁",
       "profileKey": "precise-strike",
-      "when": { "minClusters": 1 }
+      "when": { "minClusters": 1 },
+      "coordination": "sequential",
+      "coordinationLabel": "序贯",
+      "plannedFinish": { "basis": "from-t0", "minutes": 75 },
+      "attackStart": { "key": "ip-c-west", "name": "IP 点｜C 区西侧攻击起点" },
+      "assessRoute": { "key": "route-assess-c-west", "name": "评估航线｜C 区西侧" }
     },
     {
       "key": "stk-s1-b",
@@ -199,7 +222,12 @@
       "effect": "压制摧毁",
       "recommended": true,
       "profileKey": "swarm-strike",
-      "when": { "minClusters": 6 }
+      "when": { "minClusters": 6 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 48 },
+      "attackStart": { "key": "ip-c-north", "name": "IP 点｜C 区北侧攻击起点" },
+      "assessRoute": { "key": "route-assess-c-north", "name": "评估航线｜C 区北侧" }
     },
     {
       "key": "stk-s1-c",
@@ -212,7 +240,12 @@
       "successRate": 61,
       "effect": "干扰瘫痪后打击",
       "profileKey": "ew-strike",
-      "when": { "minClusters": 2 }
+      "when": { "minClusters": 2 },
+      "coordination": "sequential",
+      "coordinationLabel": "序贯",
+      "plannedFinish": { "basis": "from-t0", "minutes": 96 },
+      "attackStart": { "key": "ip-c-east", "name": "IP 点｜C 区东侧攻击起点" },
+      "assessRoute": { "key": "route-assess-c-east", "name": "评估航线｜C 区东侧" }
     },
     {
       "key": "stk-s2-a",
@@ -225,7 +258,10 @@
       "successRate": 68,
       "effect": "精准摧毁",
       "profileKey": "precise-strike",
-      "when": { "minClusters": 1 }
+      "when": { "minClusters": 1 },
+      "coordination": "sequential",
+      "coordinationLabel": "序贯",
+      "plannedFinish": { "basis": "from-t0", "minutes": 70 }
     },
     {
       "key": "stk-s2-b",
@@ -239,7 +275,10 @@
       "effect": "协同攻击",
       "recommended": true,
       "profileKey": "swarm-strike",
-      "when": { "minClusters": 6 }
+      "when": { "minClusters": 6 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 42 }
     },
     {
       "key": "stk-s2-c",
@@ -252,7 +291,10 @@
       "successRate": 61,
       "effect": "压制后打击",
       "profileKey": "ew-strike",
-      "when": { "minClusters": 2 }
+      "when": { "minClusters": 2 },
+      "coordination": "simultaneous",
+      "coordinationLabel": "同时",
+      "plannedFinish": { "basis": "from-t0", "minutes": 88 }
     }
   ]
 }
